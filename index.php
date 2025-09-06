@@ -156,7 +156,7 @@ if ($current_page === 'dashboard') {
                         </a>
                     </li>
                     <li>
-                        <a href="payments.php" class="sidebar-item w-full text-left px-4 py-3 rounded-lg transition-all duration-200 flex items-center space-x-3 text-gray-700 hover:text-white">
+                        <a href="payment.php" class="sidebar-item w-full text-left px-4 py-3 rounded-lg transition-all duration-200 flex items-center space-x-3 text-gray-700 hover:text-white">
                             <i class="fas fa-credit-card"></i>
                             <span>ชำระเงิน</span>
                         </a>

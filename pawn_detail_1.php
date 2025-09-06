@@ -91,13 +91,6 @@ $remaining_amount = $total_amount - $total_paid;
         <div class="container mx-auto px-6 py-4">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-4">
-                    <a href="pawns.php" class="text-white hover:text-gray-200">
-                        <i class="fas fa-arrow-left text-xl"></i>
-                    </a>
-                    <i class="fas fa-handshake text-2xl"></i>
-                    <h1 class="text-2xl font-bold">รายละเอียดจำนำ</h1>
-                </div>
-                <div class="flex items-center space-x-4">
                     <button onclick="window.print()" class="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg transition-all">
                         <i class="fas fa-print mr-2"></i>พิมพ์
                     </button>
@@ -434,4 +427,11 @@ $remaining_amount = $total_amount - $total_paid;
         </div>
     </div>
 </body>
-</html>
+</html>-4">
+                    <a href="pawns.php" class="text-white hover:text-gray-200">
+                        <i class="fas fa-arrow-left text-xl"></i>
+                    </a>
+                    <i class="fas fa-handshake text-2xl"></i>
+                    <h1 class="text-2xl font-bold">รายละเอียดจำนำ</h1>
+                </div>
+                <div class="flex items-center space-x

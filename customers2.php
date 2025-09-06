@@ -156,32 +156,6 @@ $branches = $stmt->fetchAll();
         body { font-family: 'Sarabun', sans-serif; }
         .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
         .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        
-        /* ID Card Reader Styles */
-        .id-card-reader {
-            border: 2px dashed #e2e8f0;
-            border-radius: 8px;
-            padding: 20px;
-            text-align: center;
-            background: #f8fafc;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .id-card-reader:hover {
-            border-color: #3b82f6;
-            background: #eff6ff;
-        }
-        
-        .id-card-reader.active {
-            border-color: #10b981;
-            background: #ecfdf5;
-        }
-        
-        .id-card-reader.error {
-            border-color: #ef4444;
-            background: #fef2f2;
-        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -229,6 +203,7 @@ $branches = $stmt->fetchAll();
                 <i class="fas fa-plus mr-2"></i>เพิ่มลูกค้าใหม่
             </button>
         </div>
+
 
         <!-- Search and Filter -->
         <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
@@ -372,24 +347,13 @@ $branches = $stmt->fetchAll();
 
     <!-- Add Customer Modal -->
     <div id="customerModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-        <div class="bg-white rounded-xl p-6 w-full max-w-2xl mx-4 max-h-96 overflow-y-auto">
+        <div class="bg-white rounded-xl p-6 w-full max-w-md mx-4 max-h-96 overflow-y-auto">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-xl font-semibold">เพิ่มลูกค้าใหม่</h3>
                 <button onclick="closeModal('customerModal')" class="text-gray-500 hover:text-gray-700">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            
-            <!-- ID Card Reader Section -->
-            <div class="mb-6">
-                <div class="id-card-reader" id="idCardReader" onclick="triggerIdCardRead()">
-                    <i class="fas fa-id-card text-4xl text-gray-400 mb-2"></i>
-                    <p class="text-gray-600 font-medium">คลิกเพื่ออ่านข้อมูลจากบัตรประชาชน</p>
-                    <p class="text-sm text-gray-500">หรือกรอกข้อมูลด้วยมือด้านล่าง</p>
-                </div>
-                <div id="cardReaderStatus" class="mt-2 text-center text-sm hidden"></div>
-            </div>
-            
             <form method="POST" class="space-y-4">
                 <input type="hidden" name="action" value="add_customer">
                 <input type="hidden" name="csrf_token" value="<?= generateCSRFToken() ?>">
@@ -397,33 +361,29 @@ $branches = $stmt->fetchAll();
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">ชื่อ</label>
-                        <input type="text" name="first_name" id="first_name" required 
-                               class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <input type="text" name="first_name" required class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">นามสกุล</label>
-                        <input type="text" name="last_name" id="last_name" required 
-                               class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        <input type="text" name="last_name" required class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     </div>
                 </div>
                 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">เลขบัตรประชาชน</label>
-                    <input type="text" name="id_card" id="id_card" pattern="[0-9]{13}" maxlength="13" required 
+                    <input type="text" name="id_card" pattern="[0-9]{13}" maxlength="13" required 
                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                            placeholder="1234567890123">
                 </div>
                 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">เบอร์โทร</label>
-                    <input type="tel" name="phone" id="phone" required 
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <input type="tel" name="phone" required class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 </div>
                 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">ที่อยู่</label>
-                    <textarea name="address" id="address" rows="3" 
-                              class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
+                    <textarea name="address" rows="3" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"></textarea>
                 </div>
                 
                 <div class="flex space-x-4">
@@ -495,166 +455,8 @@ $branches = $stmt->fetchAll();
     </div>
 
     <script>
-        // ID Card Reader Functions
-        async function triggerIdCardRead() {
-            const reader = document.getElementById('idCardReader');
-            const status = document.getElementById('cardReaderStatus');
-            
-            try {
-                // Show loading state
-                reader.classList.add('active');
-                status.classList.remove('hidden');
-                status.innerHTML = '<i class="fas fa-spinner fa-spin text-blue-500"></i> กำลังอ่านข้อมูลจากบัตรประชาชน...';
-                
-                // Check if browser supports Web NFC or similar APIs
-                if ('NDEFReader' in window) {
-                    await readWithNFC();
-                } else if (navigator.serial) {
-                    await readWithSerial();
-                } else {
-                    // Fallback: Show manual input with sample data for demo
-                    setTimeout(() => {
-                        showSampleData();
-                    }, 2000);
-                }
-            } catch (error) {
-                showError('เกิดข้อผิดพลาดในการอ่านบัตรประชาชน: ' + error.message);
-            }
-        }
-
-        // NFC Reader (for modern browsers with Web NFC support)
-        async function readWithNFC() {
-            if (!('NDEFReader' in window)) {
-                throw new Error('เบราว์เซอร์ไม่รองรับการอ่าน NFC');
-            }
-            
-            const ndef = new NDEFReader();
-            await ndef.scan();
-            
-            ndef.addEventListener('reading', ({ message }) => {
-                for (const record of message.records) {
-                    if (record.recordType === "text") {
-                        const textData = new TextDecoder().decode(record.data);
-                        parseIdCardData(textData);
-                    }
-                }
-            });
-        }
-
-        // Serial Port Reader (for connected card readers)
-        async function readWithSerial() {
-            try {
-                const port = await navigator.serial.requestPort();
-                await port.open({ baudRate: 9600 });
-                
-                const reader = port.readable.getReader();
-                let buffer = '';
-                
-                while (true) {
-                    const { value, done } = await reader.read();
-                    if (done) break;
-                    
-                    buffer += new TextDecoder().decode(value);
-                    
-                    // Check if we have complete data (adjust based on your card reader protocol)
-                    if (buffer.includes('\n') || buffer.length > 200) {
-                        parseIdCardData(buffer);
-                        break;
-                    }
-                }
-                
-                reader.releaseLock();
-                await port.close();
-            } catch (error) {
-                throw new Error('ไม่สามารถเชื่อมต่อกับเครื่องอ่านบัตรได้');
-            }
-        }
-
-        // Parse ID Card Data (adjust format based on your card reader)
-        function parseIdCardData(data) {
-            try {
-                // Example parsing for Thai ID card data
-                // Format may vary depending on card reader manufacturer
-                
-                // Sample data format (adjust as needed):
-                // "1234567890123|นาย|สมชาย|ใจดี|123 หมู่ 1 ตำบลบางพลี อำเภอบางพลี จังหวัดสมุทรปราการ 10540"
-                
-                const parts = data.trim().split('|');
-                
-                if (parts.length >= 4) {
-                    const idCard = parts[0].replace(/\D/g, ''); // Remove non-digits
-                    let firstName = parts[2] || '';
-                    let lastName = parts[3] || '';
-                    let address = parts[4] || '';
-                    
-                    // Remove title prefix (นาย, นาง, นางสาว)
-                    const title = parts[1] || '';
-                    
-                    // Fill form fields
-                    document.getElementById('id_card').value = idCard;
-                    document.getElementById('first_name').value = firstName;
-                    document.getElementById('last_name').value = lastName;
-                    document.getElementById('address').value = address;
-                    
-                    showSuccess('อ่านข้อมูลจากบัตรประชาชนสำเร็จ');
-                } else {
-                    throw new Error('รูปแบบข้อมูลไม่ถูกต้อง');
-                }
-            } catch (error) {
-                showError('ไม่สามารถแปลงข้อมูลได้: ' + error.message);
-            }
-        }
-
-        // Show sample data for demonstration
-        function showSampleData() {
-            document.getElementById('id_card').value = '1234567890123';
-            document.getElementById('first_name').value = 'สมชาย';
-            document.getElementById('last_name').value = 'ใจดี';
-            document.getElementById('address').value = '123 หมู่ 1 ตำบลบางพลี อำเภอบางพลี จังหวัดสมุทรปราการ 10540';
-            
-            showSuccess('ใส่ข้อมูลตัวอย่างแล้ว (Demo Mode)');
-        }
-
-        function showSuccess(message) {
-            const reader = document.getElementById('idCardReader');
-            const status = document.getElementById('cardReaderStatus');
-            
-            reader.classList.remove('active', 'error');
-            reader.classList.add('active');
-            status.innerHTML = '<i class="fas fa-check text-green-500"></i> ' + message;
-            
-            setTimeout(() => {
-                reader.classList.remove('active');
-                status.classList.add('hidden');
-            }, 3000);
-        }
-
-        function showError(message) {
-            const reader = document.getElementById('idCardReader');
-            const status = document.getElementById('cardReaderStatus');
-            
-            reader.classList.remove('active');
-            reader.classList.add('error');
-            status.innerHTML = '<i class="fas fa-exclamation-triangle text-red-500"></i> ' + message;
-            
-            setTimeout(() => {
-                reader.classList.remove('error');
-                status.classList.add('hidden');
-            }, 5000);
-        }
-
-        // Clear form data
-        function clearFormData() {
-            document.getElementById('first_name').value = '';
-            document.getElementById('last_name').value = '';
-            document.getElementById('id_card').value = '';
-            document.getElementById('phone').value = '';
-            document.getElementById('address').value = '';
-        }
-
         // Modal functions
         function openCustomerModal() {
-            clearFormData();
             document.getElementById('customerModal').classList.remove('hidden');
             document.getElementById('customerModal').classList.add('flex');
         }
@@ -712,52 +514,8 @@ $branches = $stmt->fetchAll();
         }, 5000);
 
         // ID card input formatting
-        document.addEventListener('DOMContentLoaded', function() {
-            const idCardInput = document.querySelector('input[name="id_card"]');
-            if (idCardInput) {
-                idCardInput.addEventListener('input', function(e) {
-                    this.value = this.value.replace(/\D/g, '');
-                });
-            }
-        });
-
-        // Phone number formatting
-        document.addEventListener('DOMContentLoaded', function() {
-            const phoneInputs = document.querySelectorAll('input[type="tel"]');
-            phoneInputs.forEach(input => {
-                input.addEventListener('input', function(e) {
-                    let value = this.value.replace(/\D/g, '');
-                    
-                    // Format as XXX-XXX-XXXX
-                    if (value.length >= 6) {
-                        value = value.substring(0,3) + '-' + value.substring(3,6) + '-' + value.substring(6,10);
-                    } else if (value.length >= 3) {
-                        value = value.substring(0,3) + '-' + value.substring(3);
-                    }
-                    
-                    this.value = value;
-                });
-            });
-        });
-
-        // Keyboard shortcuts
-        document.addEventListener('keydown', function(e) {
-            // Ctrl + N or Cmd + N for new customer
-            if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
-                e.preventDefault();
-                openCustomerModal();
-            }
-            
-            // ESC to close modals
-            if (e.key === 'Escape') {
-                const modals = document.querySelectorAll('[id$="Modal"]');
-                modals.forEach(modal => {
-                    if (!modal.classList.contains('hidden')) {
-                        modal.classList.add('hidden');
-                        modal.classList.remove('flex');
-                    }
-                });
-            }
+        document.querySelector('input[name="id_card"]').addEventListener('input', function(e) {
+            this.value = this.value.replace(/\D/g, '');
         });
     </script>
 </body>
